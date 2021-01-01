@@ -1,0 +1,33 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+const app=express();
+
+dotenv.config()
+
+//Import Routes
+import postsRoute from './routes/posts.js';
+import userRoute from './routes/user.js'
+
+
+//Midleware
+app.use(cors())
+app.use(express.json());
+//Roure midleware
+app.use('/posts',postsRoute);
+app.use('/user',userRoute);
+
+//ROUTES
+app.get('/',(req,res)=>{
+    res.status(200).send("You are on home page");
+});
+
+//Connect DB
+mongoose.connect(
+process.env.DB_CONNECTION,
+{ useNewUrlParser: true,useUnifiedTopology: true },
+()=>console.log("connected to db!")
+);
+
+app.listen(3001,()=>console.log('Server Up and running'));
