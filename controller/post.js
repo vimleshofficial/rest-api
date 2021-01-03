@@ -1,4 +1,5 @@
 import Post from '../models/Post.js';
+
 //Get All Posts
 const getPost=async(req,res)=>{
     try{
@@ -10,6 +11,7 @@ const getPost=async(req,res)=>{
         res.status(400).send({error:err});        
     }
 }
+
 //Get Specific Post
 const specificPost=async(req,res)=>{
     try{
@@ -25,8 +27,11 @@ const specificPost=async(req,res)=>{
 //Submit New Post 
 const newPost=async(req,res)=>{
     const post= new Post({
+        creator:req.body.creator,
         title:req.body.title,
-        description:req.body.description
+        description:req.body.description,
+        tags:req.body.tags,
+        selectedFile:req.body.selectedFile,
     });
     
     try{
@@ -54,17 +59,19 @@ const deletePost=async(req,res)=>{
 
 //Update a Post 
 const updatePost=async(req,res)=>{
-   console.log(req.params.postId);
+    const post=req.body;
+    const _id=req.params.postId;
     try{
-        const updatePost=await Post.updateOne(
-                {_id:req.params.postId},
-                {$set:{ title:req.body.title}}
-                );
-        if(!updatePost) return res.status(400).send({message:'Your post not exist'});
+        const updatePost=await Post.findByIdAndUpdate(_id,{...post,_id},{new:true});
+        if(!updatePost) {           
+            return res.status(400).send({message:'Your post not exist'});
+        }
+        ///console.log(updatePost);
         res.status(200).send(updatePost);
 
     }catch(err){
-        res.status(400).send({error:err});
+        console.log(err);
+        res.status(401).send({error:err});
     }
    
 }

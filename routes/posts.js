@@ -4,14 +4,14 @@ import verify from '../routes/verifyToken.js'
 const router=express.Router();
 
 //Get All posta
-router.get('/',verify,getPost);
+router.get('/',getPost);
 //Submit New Post
-router.post('/',verify,newPost);
+router.post('/',newPost);
 //Specific post
-router.get('/:postId',verify,specificPost);
+router.get('/:postId',specificPost);
 //Delete Specific post
-router.delete('/:postId',verify,deletePost);
+router.delete('/:postId',deletePost);
 //Update A post
-router.patch('/:postId',verify,updatePost);
+router.patch('/:postId',updatePost);
 
 export default router;

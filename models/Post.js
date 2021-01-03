@@ -6,9 +6,19 @@ const PostSchema=mongoose.Schema({
         type:String,
         required:true
     },
+    creator: {
+        type:String,
+        required:true
+    },
+    tags: [String],
     description:{
         type:String,
         required:true
+    },
+    selectedFile: String,
+    likeCount: {
+        type: Number,
+        default: 0,
     },
     date:{
         type:Date,

@@ -34,6 +34,7 @@ const newUser=async(req,res)=>{
     }
    
 }
+
 //Login user
 const loginUser=async(req,res)=>{
     //Validate user data

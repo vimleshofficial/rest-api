@@ -13,7 +13,7 @@ import userRoute from './routes/user.js'
 
 //Midleware
 app.use(cors())
-app.use(express.json());
+app.use(express.json({ limit: '10MB' }));
 //Roure midleware
 app.use('/posts',postsRoute);
 app.use('/user',userRoute);
@@ -26,8 +26,8 @@ app.get('/',(req,res)=>{
 //Connect DB
 mongoose.connect(
 process.env.DB_CONNECTION,
-{ useNewUrlParser: true,useUnifiedTopology: true },
+{ useNewUrlParser: true,useUnifiedTopology: true,useFindAndModify: false,useCreateIndex: true },
 ()=>console.log("connected to db!")
 );
 
-app.listen(3001,()=>console.log('Server Up and running'));
+app.listen(5000,()=>console.log('Server Up and running on 5000 post'));
