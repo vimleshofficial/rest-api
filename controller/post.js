@@ -47,9 +47,11 @@ const newPost=async(req,res)=>{
 
 //Delete Specific Post
 const deletePost=async(req,res)=>{
+    const _id=req.params.postId;
     try{
-        const postRemove=await Post.remove({_id:req.params.postId});
+        const postRemove=await Post.findByIdAndRemove(_id);
         if(!postRemove) return res.status(400).send({message:'Post Not Found'});
+        console.log("deleted");
         res.status(200).send(postRemove);
 
     }catch(err){
@@ -75,4 +77,19 @@ const updatePost=async(req,res)=>{
     }
    
 }
-export {getPost,newPost,specificPost,deletePost,updatePost};
+
+//like post
+const likePost=async(req,res)=>{
+    const _id=req.params.postId;    
+    try {
+        const post=await Post.findById(_id);
+        const updatedPost=await Post.findByIdAndUpdate(_id,{likeCount:post.likeCount+1},{new:true});
+        if(!updatedPost) {           
+            return res.status(400).send({message:'Your post not exist'});
+        }
+        res.status(200).send(updatedPost);
+    } catch (error) {
+        res.status(401).send({error:err});
+    }
+}
+export {getPost,newPost,specificPost,deletePost,updatePost,likePost};

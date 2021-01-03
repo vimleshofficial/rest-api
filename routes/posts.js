@@ -1,5 +1,5 @@
 import express from 'express';
-import {getPost,newPost,specificPost,deletePost,updatePost} from '../controller/post.js';
+import {getPost,newPost,specificPost,deletePost,updatePost,likePost} from '../controller/post.js';
 import verify from '../routes/verifyToken.js'
 const router=express.Router();
 
@@ -13,5 +13,7 @@ router.get('/:postId',specificPost);
 router.delete('/:postId',deletePost);
 //Update A post
 router.patch('/:postId',updatePost);
+//Like Post
+router.patch('/:postId/likePost',likePost);
 
 export default router;
