@@ -51,7 +51,9 @@ const loginUser=async(req,res)=>{
         //Create and assing a token
         const token=jwt.sign({_id:user._id},process.env.TOKEN_SECRET);
         
-        res.header('auth-token',token).send(token);
+        res.header('auth-token',token).send({
+            token,
+            user:{_id:user._id,name:user.name,email:user.email}});
 
     }catch(err){
         //console.log(err);
