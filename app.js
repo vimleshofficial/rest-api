@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 const app=express();
 
-dotenv.config()
+dotenv.config();
 
 //Import Routes
 import postsRoute from './routes/posts.js';
@@ -24,10 +24,11 @@ app.get('/',(req,res)=>{
 });
 
 //Connect DB
+const PORT= process.env.PORT || 5000;
 mongoose.connect(
 process.env.DB_CONNECTION,
 { useNewUrlParser: true,useUnifiedTopology: true,useFindAndModify: false,useCreateIndex: true },
 ()=>console.log("connected to db!")
 );
 
-app.listen(5000,()=>console.log('Server Up and running on 5000 post'));
+app.listen(PORT,()=>console.log(`Server Up and running on ${PORT} post`));
