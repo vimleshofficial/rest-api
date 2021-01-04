@@ -20,7 +20,7 @@ app.use('/user',userRoute);
 
 //ROUTES
 app.get('/',(req,res)=>{
-    res.status(200).send("You are on home page");
+    res.status(200).send("Hello Memories API");
 });
 
 //Connect DB
