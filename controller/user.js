@@ -4,12 +4,17 @@ import {registreValodation,loginValodation} from './validation.js'
 import bcrypt from 'bcryptjs'
 
 
+//Get User
+const getUser=async(req,res)=>{       
+    res.status(200).send({msg:"sucess"});
+}
+
 //Submit New User 
 const newUser=async(req,res)=>{    
 
     //Validate user data
     const {error}= registreValodation(req.body);
-    if(error) return res.status(400).send({message:error.details[0].message}); 
+    if(error) return res.status(401).send(error.details[0].message); 
 
     //Hash the password
     const salt=await bcrypt.genSalt(10);
@@ -23,14 +28,18 @@ const newUser=async(req,res)=>{
     try{ 
         //Checking User exist
         const emailExist=await User.findOne({email:req.body.email});
-        if(emailExist) return res.status(400).send({message:"Email already exist"});    
+        if(emailExist) return res.status(401).send("Email already exist");    
         
         const saveUser=await user.save();
-        if(!saveUser) return res.status(400).send({message:'User not save'});
-        res.status(200).send({user:user._id});
+        if(!saveUser) return res.status(401).send('User not save');
+        const token=jwt.sign({id:saveUser._id},process.env.TOKEN_SECRET);
+        
+        res.header('auth-token',token).send({
+            token,
+            user:{id:saveUser._id,name:saveUser.name,email:saveUser.email}});
 
     }catch(err){
-        res.status(400).send({error:err});
+        res.status(400).send(err);
     }
    
 }
@@ -39,26 +48,26 @@ const newUser=async(req,res)=>{
 const loginUser=async(req,res)=>{
     //Validate user data
     const {error}= loginValodation(req.body);
-    if(error) return res.status(400).send({message:error.details[0].message}); 
+    if(error) return res.status(401).send({msg:error.details[0].message}); 
     try{
         //Checking User exist
         const user=await User.findOne({email:req.body.email});
-        if(!user) return res.status(400).send({message:"Email or password is wrong."});  
+        if(!user) return res.status(401).send("Email or password is wrong.");  
 
         //Password is currect
         const validPass=await bcrypt.compare(req.body.password,user.password);
-        if(!validPass) return res.status(400).send({message:"Email or password is wrong"});         
+        if(!validPass) return res.status(401).send("Email or password is wrong");         
         //Create and assing a token
-        const token=jwt.sign({_id:user._id},process.env.TOKEN_SECRET);
+        const token=jwt.sign({id:user._id},process.env.TOKEN_SECRET);
         
         res.header('auth-token',token).send({
             token,
-            user:{_id:user._id,name:user.name,email:user.email}});
+            user:{id:user._id,name:user.name,email:user.email}});
 
     }catch(err){
         //console.log(err);
-        res.status(400).send({error:err});        
+        res.status(400).send({msg:err});        
     }
 }
 
-export {newUser,loginUser};
+export {newUser,loginUser,getUser};
