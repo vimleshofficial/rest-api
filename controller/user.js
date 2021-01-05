@@ -5,8 +5,16 @@ import bcrypt from 'bcryptjs'
 
 
 //Get User
-const getUser=async(req,res)=>{       
-    res.status(200).send({msg:"sucess"});
+const getUser=async(req,res)=>{   
+    try{
+        const user=await User.findById(req.user.id);
+        if(!user) return res.status(401).send("User Not Exist");
+        res.status(200).send({
+            user:{id:user._id,name:user.name,email:user.email}});
+    }catch(error){
+        res.status(400).send(err);
+    }
+    
 }
 
 //Submit New User 
@@ -48,7 +56,7 @@ const newUser=async(req,res)=>{
 const loginUser=async(req,res)=>{
     //Validate user data
     const {error}= loginValodation(req.body);
-    if(error) return res.status(401).send({msg:error.details[0].message}); 
+    if(error) return res.status(401).send(error.details[0].message); 
     try{
         //Checking User exist
         const user=await User.findOne({email:req.body.email});
