@@ -7,7 +7,7 @@ const PostSchema=mongoose.Schema({
         required:true
     },
     creator: {
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
         required:true
     },
     tags: [String],
@@ -19,6 +19,11 @@ const PostSchema=mongoose.Schema({
     likeCount: {
         type: Number,
         default: 0,
+    },
+    type: {
+        type: String,
+        enum : ['public','private'],
+        default: 'public'
     },
     date:{
         type:Date,

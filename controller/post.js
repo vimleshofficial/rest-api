@@ -1,14 +1,23 @@
 import Post from '../models/Post.js';
+import User from '../models/User.js';
 
 //Get All Posts
 const getPost=async(req,res)=>{
     try{
-        const posts=await Post.find();
+        const posts=await Post.aggregate([{ "$lookup": {
+            "from": "users",
+            "localField": "creator",            
+            "foreignField": "_id",
+            "as": "userinfo"
+          }}]);
+        //const posts=await Post.find();
         if(!posts) return res.status(401).send('No any available');
+        
         res.status(200).send(posts);
 
     }catch(err){
-        res.status(400).send({error:err});        
+        console.log(err);
+        res.status(400).send(err);        
     }
 }
 
@@ -25,13 +34,14 @@ const specificPost=async(req,res)=>{
 }
 
 //Submit New Post 
-const newPost=async(req,res)=>{     
+const newPost=async(req,res)=>{  
     const post= new Post({
-        creator:req.body.creator,
+        creator:req.user.id,
         title:req.body.title,
         description:req.body.description,
         tags:req.body.tags,
         selectedFile:req.body.selectedFile,
+        type:req.body.type,
     });
     
     try{
@@ -51,7 +61,6 @@ const deletePost=async(req,res)=>{
     try{
         const postRemove=await Post.findByIdAndRemove(_id);
         if(!postRemove) return res.status(401).send('Post Not Found');
-        console.log("deleted");
         res.status(200).send(postRemove);
 
     }catch(err){
@@ -73,7 +82,7 @@ const updatePost=async(req,res)=>{
 
     }catch(err){
         console.log(err);
-        res.status(401).send(err);
+        res.status(400).send(err);
     }
    
 }
