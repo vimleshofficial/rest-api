@@ -6,14 +6,14 @@ const router=express.Router();
 //Get All posta
 router.get('/',getPost);
 //Submit New Post
-router.post('/',newPost);
+router.post('/',verify,newPost);
 //Specific post
-router.get('/:postId',specificPost);
+router.get('/:postId',verify,specificPost);
 //Delete Specific post
-router.delete('/:postId',deletePost);
+router.delete('/:postId',verify,deletePost);
 //Update A post
-router.patch('/:postId',updatePost);
+router.patch('/:postId',verify,updatePost);
 //Like Post
-router.patch('/:postId/likePost',likePost);
+router.patch('/:postId/likePost',verify,likePost);
 
 export default router;
